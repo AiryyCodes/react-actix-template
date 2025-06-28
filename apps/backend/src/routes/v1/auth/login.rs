@@ -1,7 +1,7 @@
 use crate::{
     models::user::{BackendUser, get_user},
     utils::{
-        auth::jwt::{JWT_EXPIRY, REFRESH_EXPIRY, encode_jwt},
+        auth::jwt::{JWT_EXPIRY, REFRESH_EXPIRY, encode_jwt, invalidate_refresh_token},
         error::ApiError,
     },
 };
@@ -48,6 +48,8 @@ pub async fn login(
         let expires_at_chrono = chrono::DateTime::from_timestamp(expires_at.unix_timestamp(), 0)
             .ok_or(ApiError::InternalError)
             .map_err(|_| ApiError::InternalError)?;
+
+        invalidate_refresh_token(&state.db, &user).await?;
 
         sqlx::query("INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)")
             .bind(user.id)

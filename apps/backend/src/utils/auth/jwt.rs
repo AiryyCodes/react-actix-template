@@ -1,8 +1,9 @@
 use actix_web::cookie::time::{Duration, UtcDateTime};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, TokenData, Validation, decode, encode};
 use serde::{Deserialize, Serialize};
+use sqlx::{Pool, Postgres};
 
-use crate::utils::error::ApiError;
+use crate::{models::user::BackendUser, utils::error::ApiError};
 
 pub static JWT_EXPIRY: Duration = Duration::hours(24);
 pub static REFRESH_EXPIRY: Duration = Duration::days(30);
@@ -43,4 +44,17 @@ pub fn decode_jwt(jwt: String) -> Result<TokenData<Claims>, ApiError> {
         &Validation::default(),
     )
     .map_err(|_| ApiError::Unauthorized)
+}
+
+pub async fn invalidate_refresh_token(
+    db: &Pool<Postgres>,
+    user: &BackendUser,
+) -> Result<(), ApiError> {
+    sqlx::query("DELETE FROM refresh_tokens WHERE user_id = $1")
+        .bind(user.id)
+        .execute(db)
+        .await
+        .map_err(|_| ApiError::InternalError)?;
+
+    Ok(())
 }

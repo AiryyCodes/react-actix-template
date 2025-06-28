@@ -1,7 +1,7 @@
 use crate::{
     models::user::{BackendUser, user_exists},
     utils::{
-        auth::jwt::{JWT_EXPIRY, REFRESH_EXPIRY, encode_jwt},
+        auth::jwt::{JWT_EXPIRY, REFRESH_EXPIRY, encode_jwt, invalidate_refresh_token},
         error::ApiError,
     },
 };
@@ -70,6 +70,8 @@ pub async fn register(
         .ok_or(ApiError::InternalError)
         .map_err(|_| ApiError::InternalError)?;
 
+    invalidate_refresh_token(&state.db, &new_user).await?;
+
     sqlx::query("INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)")
         .bind(new_user.id)
         .bind(&refresh_token)
@@ -77,10 +79,6 @@ pub async fn register(
         .execute(&state.db)
         .await
         .map_err(|_| ApiError::InternalError)?;
-
-    let secure_cookies = std::env::var("COOKIE_SECURE")
-        .map(|val| val == "true")
-        .unwrap_or(false);
 
     let token_cookie = Cookie::build("token", &token)
         .http_only(true)

@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Button from "./Button";
+import Button from "../Button";
 import { useUser } from "@/context/UserContext";
+import DropdownMenu from "./DropdownMenu";
 
 const Navbar = () => {
     const router = useRouter();
@@ -23,7 +24,7 @@ const Navbar = () => {
                     {/* Right */}
                     <div className="flex items-center gap-4">
                         {user ? (
-                            <p>{user.username}</p>
+                            <DropdownMenu />
                         ) : (
                             <Button
                                 label="Sign in"

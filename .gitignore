@@ -15,3 +15,15 @@ node_modules
 
 #!.yarn/cache
 .pnp.*
+
+# Vim session
+Session.vim
+
+# Cargo build output
+target
+
+# Turbo pack tmp
+.turbo
+
+# Env vars
+.env

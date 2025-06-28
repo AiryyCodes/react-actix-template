@@ -1,4 +1,22 @@
 {
   "name": "website-template",
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.9.1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "web:dev": "turbo run dev --filter=frontend",
+    "web:build": "turbo run build --filter=frontend",
+    "generate:ts": "npm run types:clear && cargo test export_bindings && cat ./packages/types/bindings/*.ts > ./packages/types/index.ts",
+    "types:clear": "rimraf ./packages/types/index.ts && rimraf --glob ./packages/types/bindings"
+  },
+  "dependencies": {
+    "next": "15.3.4"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "turbo": "^2.5.4"
+  }
 }

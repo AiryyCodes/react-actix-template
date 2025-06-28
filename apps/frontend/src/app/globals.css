@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@layer base {
+    html {
+        @apply bg-gray-200;
+    }
+
+    button:not([disabled]),
+    [role="button"]:not([disabled]) {
+        cursor: pointer;
+    }
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}

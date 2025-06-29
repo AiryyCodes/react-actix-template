@@ -1,5 +1,5 @@
 use crate::{
-    models::user::{BackendUser, get_user},
+    models::user::get_user,
     utils::{
         auth::jwt::{JWT_EXPIRY, REFRESH_EXPIRY, encode_jwt, invalidate_refresh_token},
         error::ApiError,

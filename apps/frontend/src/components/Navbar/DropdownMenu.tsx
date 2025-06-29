@@ -20,8 +20,6 @@ export default function DropdownMenu() {
             cache: "no-store",
         });
 
-        console.log(await res.json());
-
         if (!res.ok) {
             return;
         }

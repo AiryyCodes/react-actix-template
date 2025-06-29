@@ -1,4 +1,3 @@
-use actix_web::Error;
 use serde::{Deserialize, Serialize};
 use sqlx::{Pool, Postgres, prelude::FromRow};
 
